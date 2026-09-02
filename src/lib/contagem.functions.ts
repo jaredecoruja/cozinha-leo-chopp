@@ -64,6 +64,18 @@ function montarResumo(itens: { nome: string; quantidade: number }[]): string {
   return itens.map((i) => `${i.nome}: ${formatarQuantidade(i.quantidade)}`).join(" | ");
 }
 
+/** Usa a data escolhida (YYYY-MM-DD) mantendo a hora atual; sem data, usa agora. */
+function dataEscolhida(iso?: string): Date {
+  const agora = new Date();
+  if (!iso) return agora;
+  const [a, m, d] = iso.split("-").map(Number);
+  if (!a || !m || !d) return agora;
+  return new Date(
+    Date.UTC(a, m - 1, d, agora.getUTCHours(), agora.getUTCMinutes(), agora.getUTCSeconds()),
+  );
+}
+
+
 export const getInsumos = createServerFn({ method: "GET" }).handler(async () => {
   const { lerFaixa } = await import("./contagem.server");
   const valores = await lerFaixa(`${ABA_CONTAGEM}!A1:B${ULTIMA_LINHA}`);
