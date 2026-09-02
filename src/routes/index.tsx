@@ -157,32 +157,52 @@ function Contagem() {
       )}
 
       <div className="mt-4 space-y-5">
-        {grupos.map(([grupo, itens]) => (
-          <section key={grupo}>
-            <h2 className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-accent backdrop-blur">
-              {grupo}
-            </h2>
-            <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
-              {itens.map((insumo) => (
-                <li key={insumo.row} className="flex items-center justify-between gap-3 px-3 py-2">
-                  <span className="text-sm font-medium">{insumo.nome}</span>
-                  <CampoQuantidade
-                    valor={quantidades[insumo.row]}
-                    onChange={(v) =>
-                      setQuantidades((atual) => {
-                        const proximo = { ...atual };
-                        if (v === null) delete proximo[insumo.row];
-                        else proximo[insumo.row] = v;
-                        return proximo;
-                      })
-                    }
-                  />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+        {grupos.map(([grupo, itens]) => {
+          const aberto = !recolhidos[grupo];
+          const lancadosGrupo = itens.filter((i) => quantidades[i.row] !== undefined).length;
+          return (
+            <section key={grupo}>
+              <button
+                type="button"
+                aria-expanded={aberto}
+                onClick={() => setRecolhidos((a) => ({ ...a, [grupo]: aberto }))}
+                className="sticky top-0 z-10 -mx-4 flex w-[calc(100%+2rem)] items-center gap-2 bg-background/95 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-accent backdrop-blur"
+              >
+                <span className={`transition-transform ${aberto ? "rotate-90" : ""}`}>▶</span>
+                <span>{grupo}</span>
+                <span className="ml-auto text-[11px] font-semibold normal-case tracking-normal text-muted-foreground">
+                  {lancadosGrupo > 0 ? `${lancadosGrupo} lançado(s) · ` : ""}
+                  {itens.length} itens
+                </span>
+              </button>
+              {aberto && (
+                <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+                  {itens.map((insumo) => (
+                    <li
+                      key={insumo.row}
+                      className="flex items-center justify-between gap-3 px-3 py-2"
+                    >
+                      <span className="text-sm font-medium">{insumo.nome}</span>
+                      <CampoQuantidade
+                        valor={quantidades[insumo.row]}
+                        onChange={(v) =>
+                          setQuantidades((atual) => {
+                            const proximo = { ...atual };
+                            if (v === null) delete proximo[insumo.row];
+                            else proximo[insumo.row] = v;
+                            return proximo;
+                          })
+                        }
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          );
+        })}
       </div>
+
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
