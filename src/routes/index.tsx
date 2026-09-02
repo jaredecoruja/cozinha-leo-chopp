@@ -72,8 +72,10 @@ function Contagem() {
         data: {
           responsavel,
           observacoes,
+          dataContagem,
           itens: lancados.map(([row, quantidade]) => ({ row: Number(row), quantidade })),
         },
+
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["relatorios"] });
