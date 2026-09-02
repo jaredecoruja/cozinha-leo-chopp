@@ -55,19 +55,26 @@ function ListaRelatorios() {
   return (
     <main className="mx-auto w-full max-w-2xl px-4 pb-28 pt-6">
       <header className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+        <div className="min-w-0">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground"
+          >
+            ← Voltar ao início
+          </Link>
+          <p className="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
             Cozinha Leo Chopp
           </p>
           <h1 className="mt-1 text-2xl font-extrabold tracking-tight">Relatórios</h1>
         </div>
         <Link
           to="/"
-          className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold"
+          className="shrink-0 rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold"
         >
           Nova contagem
         </Link>
       </header>
+
 
       {modoAdm && (
         <div className="mt-4 rounded-2xl border border-destructive/40 bg-destructive/10 p-3 text-sm">
