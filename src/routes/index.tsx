@@ -36,10 +36,14 @@ function Contagem() {
     queryFn: () => fetchInsumos(),
   });
 
+  const hoje = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
   const [responsavel, setResponsavel] = useState("");
+  const [dataContagem, setDataContagem] = useState(hoje);
   const [observacoes, setObservacoes] = useState("");
   const [busca, setBusca] = useState("");
   const [quantidades, setQuantidades] = useState<Record<number, number>>({});
+  const [recolhidos, setRecolhidos] = useState<Record<string, boolean>>({});
+
 
   const insumos = data?.insumos ?? [];
   const filtrados = useMemo(() => {
@@ -68,8 +72,10 @@ function Contagem() {
         data: {
           responsavel,
           observacoes,
+          dataContagem,
           itens: lancados.map(([row, quantidade]) => ({ row: Number(row), quantidade })),
         },
+
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["relatorios"] });
@@ -97,18 +103,32 @@ function Contagem() {
       </header>
 
       <section className="mt-6 space-y-3 rounded-2xl border border-border bg-card p-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Responsável
+            </span>
+            <input
+              value={responsavel}
+              onChange={(e) => setResponsavel(e.target.value)}
+              placeholder="Seu nome"
+              className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Data
+            </span>
+            <input
+              type="date"
+              value={dataContagem}
+              onChange={(e) => setDataContagem(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+            />
+          </label>
+        </div>
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Responsável
-          </span>
-          <input
-            value={responsavel}
-            onChange={(e) => setResponsavel(e.target.value)}
-            placeholder="Seu nome"
-            className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
-          />
-        </label>
-        <label className="block">
+
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Observações
           </span>
@@ -137,32 +157,52 @@ function Contagem() {
       )}
 
       <div className="mt-4 space-y-5">
-        {grupos.map(([grupo, itens]) => (
-          <section key={grupo}>
-            <h2 className="sticky top-0 z-10 -mx-4 bg-background/95 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-accent backdrop-blur">
-              {grupo}
-            </h2>
-            <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
-              {itens.map((insumo) => (
-                <li key={insumo.row} className="flex items-center justify-between gap-3 px-3 py-2">
-                  <span className="text-sm font-medium">{insumo.nome}</span>
-                  <CampoQuantidade
-                    valor={quantidades[insumo.row]}
-                    onChange={(v) =>
-                      setQuantidades((atual) => {
-                        const proximo = { ...atual };
-                        if (v === null) delete proximo[insumo.row];
-                        else proximo[insumo.row] = v;
-                        return proximo;
-                      })
-                    }
-                  />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
+        {grupos.map(([grupo, itens]) => {
+          const aberto = !recolhidos[grupo];
+          const lancadosGrupo = itens.filter((i) => quantidades[i.row] !== undefined).length;
+          return (
+            <section key={grupo}>
+              <button
+                type="button"
+                aria-expanded={aberto}
+                onClick={() => setRecolhidos((a) => ({ ...a, [grupo]: aberto }))}
+                className="sticky top-0 z-10 -mx-4 flex w-[calc(100%+2rem)] items-center gap-2 bg-background/95 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-accent backdrop-blur"
+              >
+                <span className={`transition-transform ${aberto ? "rotate-90" : ""}`}>▶</span>
+                <span>{grupo}</span>
+                <span className="ml-auto text-[11px] font-semibold normal-case tracking-normal text-muted-foreground">
+                  {lancadosGrupo > 0 ? `${lancadosGrupo} lançado(s) · ` : ""}
+                  {itens.length} itens
+                </span>
+              </button>
+              {aberto && (
+                <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+                  {itens.map((insumo) => (
+                    <li
+                      key={insumo.row}
+                      className="flex items-center justify-between gap-3 px-3 py-2"
+                    >
+                      <span className="text-sm font-medium">{insumo.nome}</span>
+                      <CampoQuantidade
+                        valor={quantidades[insumo.row]}
+                        onChange={(v) =>
+                          setQuantidades((atual) => {
+                            const proximo = { ...atual };
+                            if (v === null) delete proximo[insumo.row];
+                            else proximo[insumo.row] = v;
+                            return proximo;
+                          })
+                        }
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          );
+        })}
       </div>
+
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-2xl items-center gap-3">

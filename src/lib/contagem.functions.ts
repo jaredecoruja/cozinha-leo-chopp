@@ -64,6 +64,18 @@ function montarResumo(itens: { nome: string; quantidade: number }[]): string {
   return itens.map((i) => `${i.nome}: ${formatarQuantidade(i.quantidade)}`).join(" | ");
 }
 
+/** Usa a data escolhida (YYYY-MM-DD) mantendo a hora atual; sem data, usa agora. */
+function dataEscolhida(iso?: string): Date {
+  const agora = new Date();
+  if (!iso) return agora;
+  const [a, m, d] = iso.split("-").map(Number);
+  if (!a || !m || !d) return agora;
+  return new Date(
+    Date.UTC(a, m - 1, d, agora.getUTCHours(), agora.getUTCMinutes(), agora.getUTCSeconds()),
+  );
+}
+
+
 export const getInsumos = createServerFn({ method: "GET" }).handler(async () => {
   const { lerFaixa } = await import("./contagem.server");
   const valores = await lerFaixa(`${ABA_CONTAGEM}!A1:B${ULTIMA_LINHA}`);
@@ -85,6 +97,7 @@ export const criarRelatorio = createServerFn({ method: "POST" })
     (input: {
       responsavel: string;
       observacoes: string;
+      dataContagem?: string;
       itens: { row: number; quantidade: number }[];
     }) => {
       if (!input.responsavel?.trim()) throw new Error("Informe o responsável.");
@@ -116,10 +129,11 @@ export const criarRelatorio = createServerFn({ method: "POST" })
     const porRow = new Map(insumos.map((i) => [i.row, i]));
     const quantidades = new Map(data.itens.map((i) => [i.row, i.quantidade]));
 
-    const agora = new Date();
+    const agora = dataEscolhida(data.dataContagem);
     const coluna: Celula[][] = [];
     for (let linha = 1; linha <= ULTIMA_LINHA; linha++) {
       if (linha === 1) coluna.push([paraSerial(agora)]);
+
       else {
         const q = quantidades.get(linha);
         coluna.push([q === undefined ? "" : q]);
