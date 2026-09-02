@@ -103,18 +103,32 @@ function Contagem() {
       </header>
 
       <section className="mt-6 space-y-3 rounded-2xl border border-border bg-card p-4">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Responsável
+            </span>
+            <input
+              value={responsavel}
+              onChange={(e) => setResponsavel(e.target.value)}
+              placeholder="Seu nome"
+              className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+            />
+          </label>
+          <label className="block">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Data
+            </span>
+            <input
+              type="date"
+              value={dataContagem}
+              onChange={(e) => setDataContagem(e.target.value)}
+              className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+            />
+          </label>
+        </div>
         <label className="block">
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            Responsável
-          </span>
-          <input
-            value={responsavel}
-            onChange={(e) => setResponsavel(e.target.value)}
-            placeholder="Seu nome"
-            className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
-          />
-        </label>
-        <label className="block">
+
           <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Observações
           </span>
