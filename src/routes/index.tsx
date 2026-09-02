@@ -36,10 +36,14 @@ function Contagem() {
     queryFn: () => fetchInsumos(),
   });
 
+  const hoje = new Date().toLocaleDateString("en-CA", { timeZone: "America/Sao_Paulo" });
   const [responsavel, setResponsavel] = useState("");
+  const [dataContagem, setDataContagem] = useState(hoje);
   const [observacoes, setObservacoes] = useState("");
   const [busca, setBusca] = useState("");
   const [quantidades, setQuantidades] = useState<Record<number, number>>({});
+  const [recolhidos, setRecolhidos] = useState<Record<string, boolean>>({});
+
 
   const insumos = data?.insumos ?? [];
   const filtrados = useMemo(() => {
