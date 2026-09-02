@@ -85,6 +85,7 @@ export const criarRelatorio = createServerFn({ method: "POST" })
     (input: {
       responsavel: string;
       observacoes: string;
+      dataContagem?: string;
       itens: { row: number; quantidade: number }[];
     }) => {
       if (!input.responsavel?.trim()) throw new Error("Informe o responsável.");
@@ -116,10 +117,11 @@ export const criarRelatorio = createServerFn({ method: "POST" })
     const porRow = new Map(insumos.map((i) => [i.row, i]));
     const quantidades = new Map(data.itens.map((i) => [i.row, i.quantidade]));
 
-    const agora = new Date();
+    const agora = dataEscolhida(data.dataContagem);
     const coluna: Celula[][] = [];
     for (let linha = 1; linha <= ULTIMA_LINHA; linha++) {
       if (linha === 1) coluna.push([paraSerial(agora)]);
+
       else {
         const q = quantidades.get(linha);
         coluna.push([q === undefined ? "" : q]);
