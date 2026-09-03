@@ -37,7 +37,8 @@ function lerInsumosDeValores(valores: Celula[][]): InsumoDTO[] {
     const a = texto(linha[0]).trim();
     const b = texto(linha[1]).trim();
     if (a) grupo = a;
-    if (i + 1 < 4 || !b) continue;
+    // Linha 1 é o cabeçalho (datas); insumos começam na linha 2.
+    if (i === 0 || !b) continue;
     insumos.push({ row: i + 1, nome: b, grupo });
   }
   return insumos;
