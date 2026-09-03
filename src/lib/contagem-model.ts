@@ -39,7 +39,14 @@ export function deSerial(n: number): Date {
 export function paraIso(valor: unknown): string {
   if (typeof valor === "number" && Number.isFinite(valor)) return deSerial(valor).toISOString();
   if (typeof valor === "string" && valor.trim() !== "") {
-    const d = new Date(valor);
+    const br = valor.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})(?:[ ,]+(\d{2}):(\d{2}))?/);
+    if (br) {
+      const [, d, m, a, h = "12", mi = "00"] = br;
+      return new Date(
+        Date.UTC(Number(a), Number(m) - 1, Number(d), Number(h) + 3, Number(mi)),
+      ).toISOString();
+    }
+    const d = new Date(valor.trim());
     if (!Number.isNaN(d.getTime())) return d.toISOString();
   }
   return "";
