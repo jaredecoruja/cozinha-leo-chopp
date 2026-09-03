@@ -1,6 +1,7 @@
 // Modelo compartilhado (seguro para o navegador) da planilha "LANÇAMENTOS COZINHA".
 
-export const ABA_CONTAGEM = "CONTAGEM";
+/** Aba de lançamentos na planilha (nome com espaço precisa de aspas simples em A1). */
+export const ABA_CONTAGEM = "'IMPRIMIR CONTAGEM'";
 export const ABA_RELATORIOS = "RELATORIOS_APP";
 
 /** Primeira coluna de lançamento (C) em índice 0-based. */
