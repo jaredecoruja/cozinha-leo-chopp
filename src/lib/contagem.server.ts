@@ -33,7 +33,9 @@ async function chamar(path: string, init?: RequestInit): Promise<unknown> {
 type Celula = string | number;
 
 export async function lerFaixas(ranges: string[]): Promise<Celula[][][]> {
-  const qs = ranges.map((r) => `ranges=${r}`).join("&");
+  const qs = ranges
+    .map((r) => `ranges=${r.replace(/ /g, "%20").replace(/'/g, "%27")}`)
+    .join("&");
   const json = (await chamar(
     `/spreadsheets/${SPREADSHEET_ID}/values:batchGet?${qs}&valueRenderOption=UNFORMATTED_VALUE`,
   )) as { valueRanges?: { values?: Celula[][] }[] };
