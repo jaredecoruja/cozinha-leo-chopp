@@ -45,6 +45,22 @@ export function paraIso(valor: unknown): string {
   return "";
 }
 
+/** Texto dd/mm/aaaa hh:mm no fuso da planilha — o Sheets grava como data de verdade. */
+export function paraTextoPlanilha(d: Date): string {
+  const p = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  })
+    .format(d)
+    .replace(",", "");
+  return p;
+}
+
 export function formatarQuantidade(n: number): string {
   return String(n).replace(".", ",");
 }
