@@ -41,7 +41,7 @@ function ListaRelatorios() {
   const [selecionados, setSelecionados] = useState<string[]>([]);
   const [confirmar, setConfirmar] = useState(false);
 
-  const relatorios = data?.relatorios ?? [];
+  const relatorios = (data?.relatorios ?? []).filter((r) => !r.excluido);
 
   const mutation = useMutation({
     mutationFn: () => excluir({ data: { chave, ids: selecionados } }),
