@@ -39,10 +39,33 @@ export function deSerial(n: number): Date {
 export function paraIso(valor: unknown): string {
   if (typeof valor === "number" && Number.isFinite(valor)) return deSerial(valor).toISOString();
   if (typeof valor === "string" && valor.trim() !== "") {
-    const d = new Date(valor);
+    const br = valor.trim().match(/^(\d{2})\/(\d{2})\/(\d{4})(?:[ ,]+(\d{2}):(\d{2}))?/);
+    if (br) {
+      const [, d, m, a, h = "12", mi = "00"] = br;
+      return new Date(
+        Date.UTC(Number(a), Number(m) - 1, Number(d), Number(h) + 3, Number(mi)),
+      ).toISOString();
+    }
+    const d = new Date(valor.trim());
     if (!Number.isNaN(d.getTime())) return d.toISOString();
   }
   return "";
+}
+
+/** Texto dd/mm/aaaa hh:mm no fuso da planilha — o Sheets grava como data de verdade. */
+export function paraTextoPlanilha(d: Date): string {
+  const p = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  })
+    .format(d)
+    .replace(",", "");
+  return p;
 }
 
 export function formatarQuantidade(n: number): string {

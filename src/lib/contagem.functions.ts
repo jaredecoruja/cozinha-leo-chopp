@@ -5,7 +5,7 @@ import {
   PRIMEIRA_COLUNA,
   ULTIMA_LINHA,
   letraColuna,
-  paraSerial,
+  paraTextoPlanilha,
   paraIso,
   formatarQuantidade,
   type InsumoDTO,
@@ -132,7 +132,7 @@ export const criarRelatorio = createServerFn({ method: "POST" })
     const agora = dataEscolhida(data.dataContagem);
     const coluna: Celula[][] = [];
     for (let linha = 1; linha <= ULTIMA_LINHA; linha++) {
-      if (linha === 1) coluna.push([paraSerial(agora)]);
+      if (linha === 1) coluna.push([paraTextoPlanilha(agora)]);
 
       else {
         const q = quantidades.get(linha);
@@ -150,7 +150,7 @@ export const criarRelatorio = createServerFn({ method: "POST" })
     ]);
     await acrescentarLinha(`${ABA_RELATORIOS}!A1`, [
       id,
-      paraSerial(agora),
+      paraTextoPlanilha(agora),
       data.responsavel.trim(),
       data.observacoes ?? "",
       letra,
@@ -254,7 +254,7 @@ export const atualizarRelatorio = createServerFn({ method: "POST" })
             data.observacoes ?? "",
             relatorio.coluna,
             montarResumo(lancados),
-            paraSerial(agora),
+            paraTextoPlanilha(agora),
             data.responsavel.trim(),
             "EDITADO",
           ],
