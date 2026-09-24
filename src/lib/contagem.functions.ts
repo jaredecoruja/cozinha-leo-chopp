@@ -338,7 +338,7 @@ export const getConferencia = createServerFn({ method: "GET" }).handler(async ()
         b: !!v?.effectiveFormat?.textFormat?.bold,
       };
     });
-    const pintada = celulas[3].bg !== "#ffffff"; // apenas coluna F
+    const pintada = (celulas[3]?.bg ?? "#ffffff") !== "#ffffff"; // apenas coluna F
     if (i === 0 || pintada) resultado.push({ row: i + 1, celulas });
   });
   return { linhas: resultado, atualizado: new Date().toISOString() };
