@@ -10,12 +10,18 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ConferenciaRouteImport } from './routes/conferencia'
 import { Route as RelatoriosIndexRouteImport } from './routes/relatorios.index'
 import { Route as RelatoriosIdRouteImport } from './routes/relatorios.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConferenciaRoute = ConferenciaRouteImport.update({
+  id: '/conferencia',
+  path: '/conferencia',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RelatoriosIndexRoute = RelatoriosIndexRouteImport.update({
@@ -31,30 +37,34 @@ const RelatoriosIdRoute = RelatoriosIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/conferencia': typeof ConferenciaRoute
   '/relatorios/$id': typeof RelatoriosIdRoute
   '/relatorios/': typeof RelatoriosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/conferencia': typeof ConferenciaRoute
   '/relatorios/$id': typeof RelatoriosIdRoute
   '/relatorios': typeof RelatoriosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/conferencia': typeof ConferenciaRoute
   '/relatorios/$id': typeof RelatoriosIdRoute
   '/relatorios/': typeof RelatoriosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/relatorios/$id' | '/relatorios/'
+  fullPaths: '/' | '/conferencia' | '/relatorios/$id' | '/relatorios/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/relatorios/$id' | '/relatorios'
-  id: '__root__' | '/' | '/relatorios/$id' | '/relatorios/'
+  to: '/' | '/conferencia' | '/relatorios/$id' | '/relatorios'
+  id: '__root__' | '/' | '/conferencia' | '/relatorios/$id' | '/relatorios/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ConferenciaRoute: typeof ConferenciaRoute
   RelatoriosIdRoute: typeof RelatoriosIdRoute
   RelatoriosIndexRoute: typeof RelatoriosIndexRoute
 }
@@ -66,6 +76,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/conferencia': {
+      id: '/conferencia'
+      path: '/conferencia'
+      fullPath: '/conferencia'
+      preLoaderRoute: typeof ConferenciaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/relatorios/': {
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ConferenciaRoute: ConferenciaRoute,
   RelatoriosIdRoute: RelatoriosIdRoute,
   RelatoriosIndexRoute: RelatoriosIndexRoute,
 }
