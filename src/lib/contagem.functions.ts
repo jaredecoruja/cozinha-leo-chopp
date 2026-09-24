@@ -310,3 +310,36 @@ export const excluirRelatorios = createServerFn({ method: "POST" })
 export const validarChaveAdm = createServerFn({ method: "POST" })
   .inputValidator((input: { chave: string }) => input)
   .handler(async ({ data }) => ({ ok: data.chave === CHAVE_ADM }));
+
+export type CelulaConferencia = { t: string; bg: string; fg: string; b: boolean };
+export type LinhaConferencia = { row: number; celulas: CelulaConferencia[] };
+
+type Cor = { red?: number; green?: number; blue?: number };
+function hex(c: Cor | undefined, padrao: string): string {
+  if (!c || (c.red === undefined && c.green === undefined && c.blue === undefined)) return padrao;
+  const p = (v?: number) => Math.round((v ?? 0) * 255).toString(16).padStart(2, "0");
+  return `#${p(c.red)}${p(c.green)}${p(c.blue)}`;
+}
+
+export const getConferencia = createServerFn({ method: "GET" }).handler(async () => {
+  const { lerGrade } = await import("./contagem.server");
+  const json = (await lerGrade("CONFERENCIA!C1:F300")) as {
+    sheets?: { data?: { rowData?: { values?: { formattedValue?: string; effectiveFormat?: { backgroundColor?: Cor; textFormat?: { foregroundColor?: Cor; bold?: boolean } } }[] }[] }[] }[];
+  };
+  const linhas = json.sheets?.[0]?.data?.[0]?.rowData ?? [];
+  const resultado: LinhaConferencia[] = [];
+  linhas.forEach((l, i) => {
+    const celulas: CelulaConferencia[] = [0, 1, 2, 3].map((k) => {
+      const v = l.values?.[k];
+      return {
+        t: v?.formattedValue ?? "",
+        bg: hex(v?.effectiveFormat?.backgroundColor, "#ffffff"),
+        fg: hex(v?.effectiveFormat?.textFormat?.foregroundColor, "#000000"),
+        b: !!v?.effectiveFormat?.textFormat?.bold,
+      };
+    });
+    const pintada = celulas.some((c) => c.bg !== "#ffffff");
+    if (i === 0 || pintada) resultado.push({ row: i + 1, celulas });
+  });
+  return { linhas: resultado, atualizado: new Date().toISOString() };
+});

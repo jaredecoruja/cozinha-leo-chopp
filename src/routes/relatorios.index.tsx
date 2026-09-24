@@ -67,12 +67,22 @@ function ListaRelatorios() {
           </p>
           <h1 className="mt-1 text-2xl font-extrabold tracking-tight">Relatórios</h1>
         </div>
-        <Link
-          to="/"
-          className="shrink-0 rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold"
-        >
-          Nova contagem
-        </Link>
+        <div className="flex shrink-0 gap-2">
+          {modoAdm && (
+            <Link
+              to="/conferencia"
+              className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
+            >
+              Conferência
+            </Link>
+          )}
+          <Link
+            to="/"
+            className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold"
+          >
+            Nova contagem
+          </Link>
+        </div>
       </header>
 
 

@@ -60,3 +60,9 @@ export async function acrescentarLinha(range: string, linha: Celula[]): Promise<
     { method: "POST", body: JSON.stringify({ values: [linha] }) },
   );
 }
+
+export async function lerGrade(range: string): Promise<unknown> {
+  return chamar(
+    `/spreadsheets/${SPREADSHEET_ID}?ranges=${range}&fields=sheets.data.rowData.values(formattedValue,effectiveFormat(backgroundColor,horizontalAlignment,textFormat(foregroundColor,bold)))`,
+  );
+}
