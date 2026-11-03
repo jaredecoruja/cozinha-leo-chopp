@@ -1,14 +1,22 @@
-# Welcome to your Lovable project
+# COZINHA LEO CHOPP
+
+VAMOS FAZER ALGUMAS ALTERAÇÕES PARA OTIMIZAR MAIS E MELHORAR APP
+
+EU QUERO QUE OS RELATORIO POSSAM SER VISUALIZADOS APÓS SEREM ENVIADOS, APERTANDO EM RELATÓRIOS, DEPOIS ESCOLHENDO O QUE EU QUERO VER CLICANDO ELE ABRE E MOSTRA OS ITENS LANÇADOS COM SUAS QUANTIDADES, PRECISA TER QUANDO ABRIR ESSE RELATORIO NO CANTO SUPERIOR DIREITO UMA OPÇAO PARA EDIÇAO DE UM RELATORIO JA ENVIADO, APOS CLICAR APARECI UMA MENSAGEM PERGUNTANDO SE QUER EDITAR SE A PESSOA COLOCAR SIM ELE REABRI PARA EDIÇAO APOS AS ALTERAÇOES PODE SER SALVO COM AS ALTEREÇOES ATUAIS, POREM MOSTRA QUE FOI EDITADO NA PARTE DE RELATORIOS JUNTO COM O RESPONSAVEL E A DATA, ESSAS ALTERAÇOES TAMBEM MUDAM MINHA PLANILHA BASE QUE MANDEI NO LINK ASSIM COMO SE FOSSE A PRIMEIRA VEZ QUE SE MANDOU APENAS COM A MSM OBSERVAÇAO DA EDIÇAO.
+
+NA INTERFACE SE FAZ NECESSARIO UM BOTAO PEQUENO NO CANTO INFERIOR ESQUERDO UM BOTAO DE ADM, PARA QUE SE POR VENTURA NECESSITE EXCLUIR ALGUM RELATORIO APENAS O ADM POSSA ACESSAR E EXCLUIR UM RELATORIO, APOS CLICAR NO BOTAO ADM PEDE UMA CHAVE DE ACESSO QUE SERA "0000" DEPOIS ENTRA NA INTERFACE DOS RELATORIOS E ME DA A OPCAO DE SELECIONAR UM RELATORIO JA ENVIADO PARA EXCLUIR TENDO UMA CAIXINHA DE LIXEIRA PARA EXCLUIR OS SELECIONADO ISSO EXCLUI TAMBEM DA MINHA PLANILHA BASE QUE MANDEI NO LINK OS VALORES QUE FOI ANEXADO POREM MANTEM NA PAGINA RELATORIO O QUE FOI EXCLUIDO COM A OBSERVAÇAO EXCLUIDO.
 
 This project was built with [Lovable](https://lovable.dev).
 
+**Live app**: https://cozinha-leo-chopp.lovable.app
+
 ## Build with Lovable
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/78318e05-0085-4a5c-8a6d-86f44dd592f0).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
 
 ## Development
 
@@ -20,10 +28,3 @@ cd <repository-name>
 npm i
 npm run dev
 ```
-
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
