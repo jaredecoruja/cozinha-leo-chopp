@@ -22,7 +22,7 @@ export function CampoQuantidade({
           setTexto(null);
           onChange(Math.max(0, (valor ?? 0) - 1));
         }}
-        className="size-9 rounded-lg border border-border bg-secondary text-lg font-bold disabled:opacity-40"
+        className="size-9 rounded-lg border border-primary bg-primary text-lg font-bold text-primary-foreground disabled:opacity-40"
       >
         −
       </button>
@@ -49,7 +49,7 @@ export function CampoQuantidade({
           setTexto(null);
           onChange((valor ?? 0) + 1);
         }}
-        className="size-9 rounded-lg border border-border bg-primary text-lg font-bold text-primary-foreground disabled:opacity-40"
+        className="size-9 rounded-lg border border-primary bg-primary text-lg font-bold text-primary-foreground disabled:opacity-40"
       >
         +
       </button>
