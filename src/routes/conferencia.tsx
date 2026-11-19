@@ -108,12 +108,15 @@ function Conferencia() {
                       const celula = l.celulas[k];
                       return (
                         <div key={k} className="min-w-0 rounded-lg bg-neutral-50 px-2 py-2 text-center">
-                          <p className="mb-1 min-h-7 text-[9px] font-bold uppercase leading-tight tracking-wide text-muted-foreground sm:text-[10px]">
+                          <p
+                            className={`mb-1 flex min-h-7 w-full items-center justify-center rounded-md px-1 text-[9px] font-bold uppercase leading-tight tracking-wide sm:text-[10px] ${k === 2 ? "" : "text-muted-foreground"}`}
+                            style={k === 2 ? { backgroundColor: celula?.bg, color: celula?.fg } : undefined}
+                          >
                             {cab.celulas[k]?.t}
                           </p>
                           <p
                             className="flex min-h-10 w-full items-center justify-center rounded-md px-2 py-2 text-sm font-extrabold tabular-nums sm:text-base"
-                            style={{ backgroundColor: celula?.bg, color: celula?.fg }}
+                            style={{ backgroundColor: k === 2 ? undefined : celula?.bg, color: celula?.fg }}
                           >
                             {celula?.t}
                           </p>
