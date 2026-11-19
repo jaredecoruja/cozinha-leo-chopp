@@ -29,6 +29,7 @@ function Conferencia() {
     refetchInterval: 20_000,
   });
   const [ok, setOk] = useState<Record<number, boolean>>({});
+  const [caldinhoAberto, setCaldinhoAberto] = useState<number | null>(null);
   useEffect(() => {
     try {
       setOk(JSON.parse(localStorage.getItem(CHAVE_OK) ?? "{}"));
@@ -106,6 +107,14 @@ function Conferencia() {
                   <div className="grid grid-cols-3 gap-2">
                     {valores.map((k) => {
                       const celula = l.celulas[k];
+                      const ehCaldinho = (produto?.t ?? "").toLocaleUpperCase("pt-BR").includes("CALDINHO");
+                      const valorCasa = k === 0 && ehCaldinho
+                        ? Number(String(celula?.t ?? "").trim().replace(/\\./g, "").replace(",", "."))
+                        : NaN;
+                      const baldes = Number.isFinite(valorCasa) && valorCasa >= 0 ? Math.floor(valorCasa / 3) : 0;
+                      const restanteMl = Number.isFinite(valorCasa) && valorCasa >= 0
+                        ? Math.round((valorCasa - baldes * 3) * 1000)
+                        : 0;
                       return (
                         <div key={k} className="min-w-0 rounded-lg bg-neutral-50 px-2 py-2 text-center">
                           <p
@@ -114,12 +123,37 @@ function Conferencia() {
                           >
                             {cab.celulas[k]?.t}
                           </p>
-                          <p
-                            className="flex min-h-10 w-full items-center justify-center rounded-md px-2 py-2 text-sm font-extrabold tabular-nums sm:text-base"
-                            style={{ backgroundColor: k === 2 ? undefined : celula?.bg, color: celula?.fg }}
-                          >
-                            {celula?.t}
-                          </p>
+                          {ehCaldinho && k === 0 ? (
+                            <button
+                              type="button"
+                              onClick={() => setCaldinhoAberto((atual) => atual === l.row ? null : l.row)}
+                              aria-expanded={caldinhoAberto === l.row}
+                              title="Ver quantidade em baldes de 3 litros"
+                              className="flex min-h-10 w-full items-center justify-center rounded-md px-2 py-2 text-sm font-extrabold tabular-nums underline decoration-dotted underline-offset-4 transition-opacity hover:opacity-80 sm:text-base"
+                              style={{ backgroundColor: celula?.bg, color: celula?.fg }}
+                            >
+                              {celula?.t}
+                            </button>
+                          ) : (
+                            <p
+                              className="flex min-h-10 w-full items-center justify-center rounded-md px-2 py-2 text-sm font-extrabold tabular-nums sm:text-base"
+                              style={{ backgroundColor: k === 2 ? undefined : celula?.bg, color: celula?.fg }}
+                            >
+                              {celula?.t}
+                            </p>
+                          )}
+                          {ehCaldinho && k === 0 && caldinhoAberto === l.row && (
+                            <div className="mt-2 rounded-md border border-black/10 bg-white px-2 py-2 text-xs text-foreground">
+                              {Number.isFinite(valorCasa) && valorCasa >= 0 ? (
+                                <>
+                                  <p className="font-bold">{baldes} {baldes === 1 ? "balde" : "baldes"} de 3 L</p>
+                                  <p className="mt-0.5 text-muted-foreground">+ {restanteMl.toLocaleString("pt-BR")} ml restantes</p>
+                                </>
+                              ) : (
+                                <p className="text-muted-foreground">Valor não numérico para conversão.</p>
+                              )}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
