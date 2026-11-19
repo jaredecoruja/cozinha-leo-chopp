@@ -112,7 +112,7 @@ function Conferencia() {
                             {cab.celulas[k]?.t}
                           </p>
                           <p
-                            className="inline-flex max-w-full items-center justify-center rounded-md px-1.5 py-1 text-sm font-extrabold tabular-nums sm:text-base"
+                            className="flex min-h-10 w-full items-center justify-center rounded-md px-2 py-2 text-sm font-extrabold tabular-nums sm:text-base"
                             style={{ backgroundColor: celula?.bg, color: celula?.fg }}
                           >
                             {celula?.t}
