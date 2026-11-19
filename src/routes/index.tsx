@@ -96,7 +96,7 @@ function Contagem() {
         </div>
         <Link
           to="/relatorios"
-          className="shrink-0 rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
+          className="shrink-0 rounded-xl border border-black bg-black px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-neutral-800"
         >
           Relatórios
         </Link>
