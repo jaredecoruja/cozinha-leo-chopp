@@ -147,7 +147,7 @@ function Conferencia() {
                               {Number.isFinite(valorCasa) && valorCasa >= 0 ? (
                                 <>
                                   <p className="font-bold">{baldes} {baldes === 1 ? "balde" : "baldes"} de 3 L</p>
-                                  <p className="mt-0.5 text-muted-foreground">+ {restanteMl.toLocaleString("pt-BR")} ml restantes</p>
+                                  <p className="mt-0.5 text-muted-foreground">+ {(restanteMl / 1000).toLocaleString("pt-BR", { maximumFractionDigits: 2 })} L restantes</p>
                                 </>
                               ) : (
                                 <p className="text-muted-foreground">Valor não numérico para conversão.</p>
