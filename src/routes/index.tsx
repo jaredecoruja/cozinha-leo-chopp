@@ -202,13 +202,15 @@ function Contagem() {
         })}
       </div>
 
-      <Link
-        to="/relatorios"
-        aria-label="Acessar administração"
-        className="fixed bottom-24 right-4 z-20 rounded-full border border-border bg-card px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-muted-foreground shadow-md transition-colors hover:bg-secondary"
-      >
-        ADM
-      </Link>
+      <div className="mt-8 flex justify-end">
+        <Link
+          to="/relatorios"
+          aria-label="Acessar administração"
+          className="rounded-full border border-border bg-card px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-muted-foreground shadow-sm transition-colors hover:bg-secondary"
+        >
+          ADM
+        </Link>
+      </div>
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
