@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getConferencia } from "@/lib/contagem.functions";
 import { formatarDataHora } from "@/lib/contagem-model";
 
@@ -20,6 +20,7 @@ export const Route = createFileRoute("/conferencia")({
 });
 
 const CHAVE_OK = "conferencia-ok";
+const CHAVE_OBSERVACOES = "conferencia-observacoes";
 
 function Conferencia() {
   const fetchConf = useServerFn(getConferencia);
@@ -30,11 +31,50 @@ function Conferencia() {
   });
   const [ok, setOk] = useState<Record<number, boolean>>({});
   const [caldinhoAberto, setCaldinhoAberto] = useState<number | null>(null);
+  const [observacoes, setObservacoes] = useState<Record<number, string>>({});
+  const [observacaoAberta, setObservacaoAberta] = useState<number | null>(null);
+  const [rascunhoObservacao, setRascunhoObservacao] = useState("");
+  const observacaoRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     try {
       setOk(JSON.parse(localStorage.getItem(CHAVE_OK) ?? "{}"));
+      setObservacoes(JSON.parse(localStorage.getItem(CHAVE_OBSERVACOES) ?? "{}"));
     } catch {}
   }, []);
+
+  useEffect(() => {
+    if (observacaoAberta === null) return;
+    const fecharAoClicarFora = (evento: PointerEvent) => {
+      if (observacaoRef.current && !observacaoRef.current.contains(evento.target as Node)) {
+        setObservacaoAberta(null);
+      }
+    };
+    document.addEventListener("pointerdown", fecharAoClicarFora);
+    return () => document.removeEventListener("pointerdown", fecharAoClicarFora);
+  }, [observacaoAberta]);
+
+  const abrirObservacao = (row: number) => {
+    setRascunhoObservacao(observacoes[row] ?? "");
+    setObservacaoAberta(row);
+  };
+
+  const salvarObservacao = (row: number) => {
+    setObservacoes((atuais) => {
+      const novas = { ...atuais, [row]: rascunhoObservacao };
+      localStorage.setItem(CHAVE_OBSERVACOES, JSON.stringify(novas));
+      return novas;
+    });
+  };
+
+  const limparObservacao = (row: number) => {
+    setObservacoes((atuais) => {
+      const novas = { ...atuais };
+      delete novas[row];
+      localStorage.setItem(CHAVE_OBSERVACOES, JSON.stringify(novas));
+      return novas;
+    });
+    setRascunhoObservacao("");
+  };
   const alternar = (row: number) =>
     setOk((a) => {
       const p = { ...a, [row]: !a[row] };
@@ -91,9 +131,51 @@ function Conferencia() {
                       <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
                         {cab.celulas[1]?.t ?? "Item"}
                       </p>
-                      <h2 className="break-words text-sm font-extrabold leading-snug text-foreground sm:text-base" style={{ color: produto?.fg }}>
-                        {produto?.t}
-                      </h2>
+                      <div ref={observacaoAberta === l.row ? observacaoRef : undefined} className="min-w-0">
+                        <button
+                          type="button"
+                          onClick={() => observacaoAberta === l.row ? setObservacaoAberta(null) : abrirObservacao(l.row)}
+                          aria-expanded={observacaoAberta === l.row}
+                          className="break-words text-left text-sm font-extrabold leading-snug text-foreground underline decoration-dotted underline-offset-4 sm:text-base"
+                          style={{ color: produto?.fg }}
+                        >
+                          {produto?.t}
+                        </button>
+                        {observacaoAberta === l.row && (
+                          <div className="mt-2 rounded-lg border border-border bg-neutral-50 p-3">
+                            <label htmlFor={`observacao-${l.row}`} className="mb-1.5 block text-xs font-bold text-foreground">
+                              Observações
+                            </label>
+                            <textarea
+                              id={`observacao-${l.row}`}
+                              value={rascunhoObservacao}
+                              onChange={(evento) => setRascunhoObservacao(evento.target.value)}
+                              placeholder="Escreva uma observação sobre este item..."
+                              rows={3}
+                              className="w-full resize-y rounded-md border border-border bg-white p-2 text-sm text-foreground outline-none focus:border-neutral-500"
+                            />
+                            <div className="mt-2 flex flex-wrap justify-end gap-2">
+                              <button
+                                type="button"
+                                onClick={() => limparObservacao(l.row)}
+                                className="rounded-md border border-border bg-white px-3 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+                              >
+                                Limpar
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => salvarObservacao(l.row)}
+                                className="rounded-md bg-black px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-neutral-800"
+                              >
+                                Salvar
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                        {observacaoAberta !== l.row && observacoes[l.row]?.trim() && (
+                          <p className="mt-1 text-[10px] font-medium text-muted-foreground">Observação salva</p>
+                        )}
+                      </div>
                     </div>
                     <button
                       onClick={() => alternar(l.row)}
