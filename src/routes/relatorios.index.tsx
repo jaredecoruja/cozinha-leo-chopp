@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { excluirRelatorios, getRelatorios } from "@/lib/contagem.functions";
 import { formatarDataHora } from "@/lib/contagem-model";
 
@@ -40,6 +40,13 @@ function ListaRelatorios() {
   const [modoAdm, setModoAdm] = useState(false);
   const [selecionados, setSelecionados] = useState<string[]>([]);
   const [confirmar, setConfirmar] = useState(false);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("cozinha-leo-chopp-acesso-adm") === "1") {
+      sessionStorage.removeItem("cozinha-leo-chopp-acesso-adm");
+      setModoAdm(true);
+    }
+  }, []);
 
   const relatorios = (data?.relatorios ?? []).filter((r) => !r.excluido);
 
