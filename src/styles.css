@@ -131,3 +131,9 @@
     color: var(--color-foreground);
   }
 }
+
+
+/* Hide the Lovable branding badge. */
+#lovable-badge {
+  display: none !important;
+}
