@@ -9,13 +9,13 @@ import { normalizar } from "@/lib/texto";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Contagem de insumos — Cozinha Leo Chopp" },
+      { title: "Cozinha Leo Chopp — Contagem de insumos" },
       {
         name: "description",
         content:
           "Lance a contagem diária de insumos da cozinha e envie direto para a planilha base.",
       },
-      { property: "og:title", content: "Contagem de insumos — Cozinha Leo Chopp" },
+      { property: "og:title", content: "Cozinha Leo Chopp" },
       {
         property: "og:description",
         content: "Contagem rápida de insumos com envio automático para a planilha.",
@@ -43,7 +43,6 @@ function Contagem() {
   const [busca, setBusca] = useState("");
   const [quantidades, setQuantidades] = useState<Record<number, number>>({});
   const [recolhidos, setRecolhidos] = useState<Record<string, boolean>>({});
-
 
   const insumos = data?.insumos ?? [];
   const filtrados = useMemo(() => {
@@ -75,7 +74,6 @@ function Contagem() {
           dataContagem,
           itens: lancados.map(([row, quantidade]) => ({ row: Number(row), quantidade })),
         },
-
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["relatorios"] });
@@ -89,14 +87,16 @@ function Contagem() {
     <main className="mx-auto w-full max-w-2xl px-4 pb-32 pt-6">
       <header className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+          <h1 className="text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl">
             Cozinha Leo Chopp
+          </h1>
+          <p className="mt-1 text-sm font-semibold text-muted-foreground">
+            Contagem de insumos
           </p>
-          <h1 className="mt-1 text-2xl font-extrabold tracking-tight">Contagem de insumos</h1>
         </div>
         <Link
           to="/relatorios"
-          className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold"
+          className="shrink-0 rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-colors hover:bg-secondary"
         >
           Relatórios
         </Link>
@@ -105,31 +105,30 @@ function Contagem() {
       <section className="mt-6 space-y-3 rounded-2xl border border-border bg-card p-4">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto]">
           <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <span className="text-xs font-semibold uppercase tracking-wide text-foreground">
               Responsável
             </span>
             <input
               value={responsavel}
               onChange={(e) => setResponsavel(e.target.value)}
               placeholder="Seu nome"
-              className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+              className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
             />
           </label>
           <label className="block">
-            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <span className="text-xs font-semibold uppercase tracking-wide text-foreground">
               Data
             </span>
             <input
               type="date"
               value={dataContagem}
               onChange={(e) => setDataContagem(e.target.value)}
-              className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+              className="mt-1 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base text-foreground outline-none focus:ring-2 focus:ring-ring"
             />
           </label>
         </div>
         <label className="block">
-
-          <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+          <span className="text-xs font-semibold uppercase tracking-wide text-foreground">
             Observações
           </span>
           <textarea
@@ -137,7 +136,7 @@ function Contagem() {
             onChange={(e) => setObservacoes(e.target.value)}
             rows={2}
             placeholder="Opcional"
-            className="mt-1 w-full resize-none rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+            className="mt-1 w-full resize-none rounded-xl border border-input bg-secondary px-3 py-3 text-base text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
           />
         </label>
       </section>
@@ -146,12 +145,12 @@ function Contagem() {
         value={busca}
         onChange={(e) => setBusca(e.target.value)}
         placeholder="Buscar insumo…"
-        className="mt-4 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base outline-none focus:ring-2 focus:ring-ring"
+        className="mt-4 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-base text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring"
       />
 
       {isLoading && <p className="mt-6 text-sm text-muted-foreground">Carregando insumos…</p>}
       {error && (
-        <p className="mt-6 rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm">
+        <p className="mt-6 rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-foreground">
           Não foi possível ler a planilha: {(error as Error).message}
         </p>
       )}
@@ -166,23 +165,23 @@ function Contagem() {
                 type="button"
                 aria-expanded={aberto}
                 onClick={() => setRecolhidos((a) => ({ ...a, [grupo]: aberto }))}
-                className="sticky top-0 z-10 -mx-4 flex w-[calc(100%+2rem)] items-center gap-2 bg-background/95 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-accent backdrop-blur"
+                className="sticky top-0 z-10 -mx-4 flex w-[calc(100%+2rem)] items-center gap-2 border-y border-black bg-black px-4 py-3 text-left text-sm font-bold uppercase tracking-[0.12em] text-white shadow-sm transition-colors hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
               >
-                <span className={`transition-transform ${aberto ? "rotate-90" : ""}`}>▶</span>
-                <span>{grupo}</span>
-                <span className="ml-auto text-[11px] font-semibold normal-case tracking-normal text-muted-foreground">
+                <span className={`text-xs transition-transform ${aberto ? "rotate-90" : ""}`}>▶</span>
+                <span className="min-w-0">{grupo}</span>
+                <span className="ml-auto shrink-0 text-xs font-semibold normal-case tracking-normal text-white">
                   {lancadosGrupo > 0 ? `${lancadosGrupo} lançado(s) · ` : ""}
                   {itens.length} itens
                 </span>
               </button>
               {aberto && (
-                <ul className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+                <ul className="divide-y divide-border overflow-hidden rounded-b-2xl border-x border-b border-border bg-card">
                   {itens.map((insumo) => (
                     <li
                       key={insumo.row}
                       className="flex items-center justify-between gap-3 px-3 py-2"
                     >
-                      <span className="text-sm font-medium">{insumo.nome}</span>
+                      <span className="text-sm font-semibold text-foreground">{insumo.nome}</span>
                       <CampoQuantidade
                         valor={quantidades[insumo.row]}
                         onChange={(v) =>
@@ -203,16 +202,15 @@ function Contagem() {
         })}
       </div>
 
-
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm font-medium text-foreground">
             {lancados.length} {lancados.length === 1 ? "item" : "itens"}
           </span>
           <button
             disabled={mutation.isPending || !responsavel.trim() || lancados.length === 0}
             onClick={() => mutation.mutate()}
-            className="ml-auto rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground disabled:opacity-40"
+            className="ml-auto rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-40"
           >
             {mutation.isPending ? "Enviando…" : "Enviar contagem"}
           </button>
