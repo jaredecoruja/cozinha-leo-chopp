@@ -9,9 +9,9 @@ export const Route = createFileRoute("/conferencia")({
   head: () => ({
     meta: [
       { title: "Conferência — Cozinha Leo Chopp" },
-      { name: "description", content: "Espelho ao vivo da aba de conferência da planilha da cozinha." },
+      { name: "description", content: "Conferência de casa, consumer e sobras e faltas." },
       { property: "og:title", content: "Conferência — Cozinha Leo Chopp" },
-      { property: "og:description", content: "Confira casa, consumer e sobras e faltas linha a linha." },
+      { property: "og:description", content: "Confira os itens e suas diferenças de estoque." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -43,73 +43,93 @@ function Conferencia() {
 
   const linhas = data?.linhas ?? [];
   const [cab, ...corpo] = linhas;
+  const totalOk = corpo.filter((l) => ok[l.row]).length;
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-2 py-3">
-      <header className="mb-2 flex items-center justify-between gap-2">
-        <Link to="/relatorios" className="text-sm font-semibold text-muted-foreground">
+    <main className="mx-auto w-full max-w-4xl px-3 py-4 sm:px-5">
+      <header className="mb-5 flex items-center justify-between gap-3">
+        <Link to="/relatorios" className="shrink-0 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground">
           ← Voltar
         </Link>
-        <h1 className="text-lg font-extrabold">Conferência</h1>
+        <div className="min-w-0 text-center">
+          <h1 className="text-xl font-extrabold tracking-tight">Conferência</h1>
+          <p className="mt-0.5 text-xs text-muted-foreground">Acompanhamento dos itens</p>
+        </div>
         <button
           onClick={() => {
             setOk({});
             localStorage.removeItem(CHAVE_OK);
           }}
-          className="rounded-lg border border-border px-2 py-1 text-xs font-semibold"
+          className="shrink-0 rounded-lg border border-border bg-white px-2.5 py-2 text-xs font-semibold transition-colors hover:bg-muted"
         >
           Limpar OK
         </button>
       </header>
-      {isLoading && <p className="text-sm text-muted-foreground">Carregando…</p>}
-      {error && <p className="text-sm text-destructive">{(error as Error).message}</p>}
+
+      {isLoading && <p className="py-8 text-center text-sm text-muted-foreground">Carregando conferência…</p>}
+      {error && <p className="rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{(error as Error).message}</p>}
+
       {cab && (
-        <table className="w-full table-fixed border-collapse text-[11px] leading-tight sm:text-xs">
-          <colgroup>
-            <col className="w-[13%]" />
-            <col />
-            <col className="w-[13%]" />
-            <col className="w-[13%]" />
-            <col className="w-[44px]" />
-          </colgroup>
-          <thead>
-            <tr>
-              {cab.celulas.map((c, k) => (
-                <th key={k} className="border border-neutral-400 px-1 py-1 text-center font-bold" style={{ background: c.bg, color: c.fg }}>
-                  {c.t}
-                </th>
-              ))}
-              <th className="border border-neutral-400 bg-card px-1 py-1">OK</th>
-            </tr>
-          </thead>
-          <tbody>
-            {corpo.map((l) => (
-              <tr key={l.row} className={ok[l.row] ? "opacity-50" : ""}>
-                {l.celulas.map((c, k) => (
-                  <td
-                    key={k}
-                    className={`border border-neutral-400 px-1 py-0.5 ${k === 1 ? "truncate text-left" : "text-center"}`}
-                    style={{ background: c.bg, color: c.fg, fontWeight: c.b ? 700 : 400 }}
-                    title={c.t}
-                  >
-                    {c.t}
-                  </td>
-                ))}
-                <td className="border border-neutral-400 bg-card p-0.5 text-center">
-                  <button
-                    onClick={() => alternar(l.row)}
-                    className={`w-full rounded px-1 py-0.5 text-[10px] font-bold ${ok[l.row] ? "bg-primary text-primary-foreground" : "border border-border"}`}
-                  >
-                    {ok[l.row] ? "✓" : "OK"}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <>
+          <div className="mb-3 flex items-center justify-between rounded-xl border border-border bg-card px-3 py-2.5">
+            <span className="text-xs font-medium text-muted-foreground">Itens conferidos</span>
+            <span className="text-sm font-bold tabular-nums">{totalOk} <span className="font-medium text-muted-foreground">/ {corpo.length}</span></span>
+          </div>
+
+          <section className="space-y-2.5" aria-label="Itens da conferência">
+            {corpo.map((l) => {
+              const produto = l.celulas[1];
+              const valores = [0, 2, 3];
+              return (
+                <article
+                  key={l.row}
+                  className={`rounded-xl border border-border bg-white p-3 shadow-sm transition-opacity sm:p-4 ${ok[l.row] ? "opacity-50" : ""}`}
+                >
+                  <div className="mb-3 flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                        {cab.celulas[1]?.t ?? "Item"}
+                      </p>
+                      <h2 className="break-words text-sm font-extrabold leading-snug text-foreground sm:text-base" style={{ color: produto?.fg }}>
+                        {produto?.t}
+                      </h2>
+                    </div>
+                    <button
+                      onClick={() => alternar(l.row)}
+                      aria-pressed={!!ok[l.row]}
+                      className={`flex h-9 min-w-[62px] shrink-0 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-bold transition-colors ${ok[l.row] ? "bg-green-600 text-white" : "border border-border bg-white text-foreground hover:bg-muted"}`}
+                    >
+                      {ok[l.row] ? "✓ OK" : "OK"}
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    {valores.map((k) => {
+                      const celula = l.celulas[k];
+                      return (
+                        <div key={k} className="min-w-0 rounded-lg bg-neutral-50 px-2 py-2 text-center">
+                          <p className="mb-1 min-h-7 text-[9px] font-bold uppercase leading-tight tracking-wide text-muted-foreground sm:text-[10px]">
+                            {cab.celulas[k]?.t}
+                          </p>
+                          <p
+                            className="inline-flex max-w-full items-center justify-center rounded-md px-1.5 py-1 text-sm font-extrabold tabular-nums sm:text-base"
+                            style={{ backgroundColor: celula?.bg, color: celula?.fg }}
+                          >
+                            {celula?.t}
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </article>
+              );
+            })}
+          </section>
+        </>
       )}
+
       {data && (
-        <p className="mt-2 text-center text-[10px] text-muted-foreground">
+        <p className="mt-4 text-center text-[10px] text-muted-foreground">
           Atualiza a cada 20 s · última leitura {formatarDataHora(data.atualizado)}
         </p>
       )}
