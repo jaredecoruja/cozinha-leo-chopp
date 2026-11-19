@@ -43,6 +43,9 @@ function Contagem() {
   const [busca, setBusca] = useState("");
   const [quantidades, setQuantidades] = useState<Record<number, number>>({});
   const [recolhidos, setRecolhidos] = useState<Record<string, boolean>>({});
+  const [pedirChaveAdm, setPedirChaveAdm] = useState(false);
+  const [chaveAdm, setChaveAdm] = useState("");
+  const [erroChaveAdm, setErroChaveAdm] = useState<string | null>(null);
 
   const insumos = data?.insumos ?? [];
   const filtrados = useMemo(() => {
@@ -203,14 +206,64 @@ function Contagem() {
       </div>
 
       <div className="mt-8 flex justify-end">
-        <Link
-          to="/relatorios"
+        <button
+          type="button"
+          onClick={() => {
+            setPedirChaveAdm(true);
+            setErroChaveAdm(null);
+          }}
           aria-label="Acessar administração"
           className="rounded-full border border-border bg-card px-4 py-2.5 text-xs font-bold uppercase tracking-wide text-muted-foreground shadow-sm transition-colors hover:bg-secondary"
         >
           ADM
-        </Link>
+        </button>
       </div>
+
+      {pedirChaveAdm && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-sm rounded-2xl border border-border bg-card p-5">
+            <h2 className="text-lg font-bold">Acesso ADM</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Informe a chave de acesso.</p>
+            <input
+              autoFocus
+              type="password"
+              inputMode="numeric"
+              value={chaveAdm}
+              onChange={(e) => setChaveAdm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  if (chaveAdm !== "0000") return setErroChaveAdm("Chave inválida.");
+                  sessionStorage.setItem("cozinha-leo-chopp-acesso-adm", "1");
+                  navigate({ to: "/relatorios" });
+                }
+              }}
+              className="mt-3 w-full rounded-xl border border-input bg-secondary px-3 py-3 text-center text-lg tracking-[0.5em] outline-none focus:ring-2 focus:ring-ring"
+            />
+            {erroChaveAdm && <p className="mt-2 text-sm text-destructive">{erroChaveAdm}</p>}
+            <div className="mt-4 flex gap-2">
+              <button
+                onClick={() => {
+                  setPedirChaveAdm(false);
+                  setChaveAdm("");
+                }}
+                className="flex-1 rounded-xl border border-border px-4 py-3 text-sm font-semibold"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  if (chaveAdm !== "0000") return setErroChaveAdm("Chave inválida.");
+                  sessionStorage.setItem("cozinha-leo-chopp-acesso-adm", "1");
+                  navigate({ to: "/relatorios" });
+                }}
+                className="flex-1 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground"
+              >
+                Entrar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="fixed inset-x-0 bottom-0 border-t border-border bg-background/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
